@@ -1,0 +1,22 @@
+<mujoco model="single_pendulum">
+  <!-- 重力沿 z 轴向下; timestep=0.002 表示每 2 ms 推进一次物理仿真 -->
+  <option gravity="0 0 -9.81" timestep="0.002"/>
+
+  <worldbody>
+    <!-- body 原点放在世界坐标 (0,0,1); joint 未写 pos,默认就在这个原点 -->
+    <body name="link" pos="0 0 1">
+      <!-- hinge 只允许绕 y 轴转动; damping 是关节自身的物理阻尼,不是控制器的 Kd -->
+      <joint name="hinge" type="hinge" axis="0 1 0" damping="0.02"/>
+      <!-- fromto 是 body 局部坐标:胶囊中心线从 (0,0,0) 到 (0,0,-0.5),所以向下 0.5 m -->
+      <geom type="capsule" fromto="0 0 0 0 0 -0.5" size="0.04" mass="1"/>
+    </body>
+  </worldbody>
+
+  <actuator>
+    <!-- 写法 A: position 执行器。ctrl[0] 填目标角度 q_des;kp 对应 Kp,kv 对应 Kd 的速度阻尼项 -->
+    <position name="pos_act" joint="hinge" kp="20" kv="1" ctrlrange="-3.14 3.14"/>
+
+    <!-- 写法 B: motor 执行器。ctrl[1] 直接填关节力矩 tau,PD 公式由 Python 手算 -->
+    <motor    name="tor_act" joint="hinge" ctrlrange="-5 5"/>
+  </actuator>
+</mujoco>
