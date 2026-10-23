@@ -1,4 +1,4 @@
-from pathlib import Path
+from pathlib import Path    #从 pathlib 导入 Path 类,用于处理文件路径
 import time
 
 import mujoco
@@ -21,7 +21,7 @@ if use_motor:
     model.actuator_gainprm[pos_act_id, :] = 0.0  # 清掉 position 执行器的 kp 增益
     model.actuator_biasprm[pos_act_id, :] = 0.0  # 清掉 position 执行器的 kv/偏置项
 
-log = []
+log = []    # 记录仿真数据,每一帧记录 (time, q, dq, ctrl) 四个值,方便后续画图分析
 with mujoco.viewer.launch_passive(model, data) as viewer:
     while viewer.is_running() and data.time < 8.0:
         step_start = time.time()
@@ -32,7 +32,9 @@ with mujoco.viewer.launch_passive(model, data) as viewer:
         if use_motor:
             # motor 模式:自己计算 tau = Kp(q_des - q) + Kd(0 - dq)
             # 目标速度设为 0,表示只要求最终停在目标角度,不要求持续运动。
-            tau = Kp * (q_des - q) + Kd * (0.0 - dq)
+
+            tau = Kp * (q_des - q) + Kd * (0.0 - dq)    # 计算手写 PD 力矩
+            
             data.ctrl[1] = np.clip(tau, -5.0, 5.0)   # 写入 tor_act;clip 对应 XML 的 ctrlrange="-5 5"
         else:
             # position 模式:只给目标角度,MuJoCo 在内部用 kp/kv 自动算出关节力矩。

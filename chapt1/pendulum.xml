@@ -7,7 +7,7 @@
     <body name="link" pos="0 0 1">
       <!-- hinge 只允许绕 y 轴转动; damping 是关节自身的物理阻尼,不是控制器的 Kd -->
       <joint name="hinge" type="hinge" axis="0 1 0" damping="0.02"/>
-      <!-- fromto 是 body 局部坐标:胶囊中心线从 (0,0,0) 到 (0,0,-0.5),所以向下 0.5 m -->
+      <!-- fromto 是 body 局部坐标:胶囊(capsule)中心线(fromto)从 (0,0,0) 到 (0,0,-0.5),所以向下 0.5 m -->
       <geom type="capsule" fromto="0 0 0 0 0 -0.5" size="0.04" mass="1"/>
     </body>
   </worldbody>
